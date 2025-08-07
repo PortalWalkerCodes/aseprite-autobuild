@@ -25,14 +25,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install cmake ninja pkg-config
-          # Add any other dependencies required for macOS builds
+          brew install cmake ninja pkg-config libjpeg-turbo webp
 
       - name: Build Aseprite
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+                -DLIBJPEG_TURBO_ROOT=/opt/homebrew/opt/libjpeg-turbo \
+                -DWEBP_ROOT=/opt/homebrew/opt/webp \
+                ..
           ninja
 
       - name: Upload build
