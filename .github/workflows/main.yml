@@ -2,17 +2,17 @@ name: Build Aseprite for macOS
 
 on:
   schedule:
-    - cron: '0 * * * *' # Every hour, customize as needed
+    - cron: '0 * * * *' # Every hour, adjust as needed
   workflow_dispatch:
 
 jobs:
   sync-and-build:
     runs-on: macos-latest
     steps:
-      - name: Checkout your fork
+      - name: Checkout repository with submodules
         uses: actions/checkout@v4
         with:
-          ref: main
+          submodules: recursive
 
       - name: Set up upstream remote
         run: |
@@ -24,16 +24,15 @@ jobs:
       - name: Install dependencies
         run: |
           brew install cmake ninja pkg-config
-          # Add other dependencies as needed
+          # Add any other dependencies required for macOS builds
 
       - name: Build Aseprite
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .. --recursive
+          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
           ninja
 
-      # Optionally, upload the build artifact
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
