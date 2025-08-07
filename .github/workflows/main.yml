@@ -1,0 +1,41 @@
+name: Build Aseprite for macOS
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Every hour, customize as needed
+  workflow_dispatch:
+
+jobs:
+  sync-and-build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout your fork
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up upstream remote
+        run: |
+          git remote add upstream https://github.com/aseprite/aseprite.git
+          git fetch upstream
+          git merge upstream/main || echo "No upstream changes"
+          git push origin main
+
+      - name: Install dependencies
+        run: |
+          brew install cmake ninja pkg-config
+          # Add other dependencies as needed
+
+      - name: Build Aseprite
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+          ninja
+
+      # Optionally, upload the build artifact
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: aseprite-macos
+          path: build/bin/
