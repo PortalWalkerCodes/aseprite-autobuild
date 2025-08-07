@@ -30,7 +30,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .. --recursive
           ninja
 
       # Optionally, upload the build artifact
